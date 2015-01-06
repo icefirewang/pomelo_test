@@ -1,0 +1,4 @@
+platform :osx, '10.8'
+pod 'SocketRocket', '~> 0.3.1-beta2'
+pod 'socket.IO', '~> 0.5.2'
+pod 'Qiniu', '~> 7.0.7'
