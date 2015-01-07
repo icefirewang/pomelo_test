@@ -7,6 +7,8 @@
 //
 
 /* out route */
+#define kRouteGetPort               @"gate.gateHandler.queryEntry"
+
 #define kRouteRegist                @"connector.regist.regist"
 #define kRouteLogin                 @"connector.login.login"
 #define kRouteGetOfflineMessage     @"connector.login.getOfflineMessage"
@@ -15,6 +17,8 @@
 #define kRouteChangeAvatar          @"connector.changeAvatar.changeAvatar"
 #define kRouteRelation              @"connector.relation.setRelaiont"
 #define kRouteBlacklist             @"connector.relation.setBlack"
+
+#define kRoute
 
 /* test route */
 
@@ -27,6 +31,14 @@
 
 
 
+typedef enum connectStatus{
+    E_NONE,
+    E_GATE_TRY,
+    E_GATE_SUC,
+    E_GATE_CUT,
+    E_CONNECTOR_TRY,
+    E_CONNECTOR_SUC
+} ConnectStatus;
 
 #import "NCCommon.h"
 #import "PomeloManager.h"
@@ -35,11 +47,21 @@
 @interface PomeloManager ()<PomeloDelegate>
 
 @property (nonatomic,strong) Pomelo *pomelo;
+@property (nonatomic) ConnectStatus connectStatus;
+
+@property (nonatomic,strong) NSString *connectorIP;
+@property (nonatomic) NSInteger connectorPort;
 
 @end
 
 @implementation PomeloManager
 
+
+#pragma mark - test
+-(void)test
+{
+
+}
 
 #pragma mark -  object
 
@@ -54,12 +76,42 @@
 
 #pragma mark - action
 
+-(void)connectToGate
+{
+    self.connectStatus = E_GATE_TRY;
+    [self.pomelo connectToHost:[HttpManager chatServer] onPort:[HttpManager gatePort]];
+}
+#pragma mark -  获取connector 信息
+-(void)getConnectorInfo:(NSString*)userid
+{
+    NSDictionary *dic = @{
+                          @"userid":userid
+                          };
+    [self.pomelo requestWithRoute:kRouteGetPort andParams:dic andCallback:^(NSDictionary* callback) {
+        NSLog(@"getConnector info %@",callback);
+        NSInteger status = [[callback objectForKey:@"status"] integerValue];
+        if (status == 0) {
+            self.connectorIP = [callback objectForKey:@"host"];
+            self.connectorPort = [[callback objectForKey:@"port"] integerValue];
+            self.connectStatus = E_GATE_CUT;
+            [self disConnect];
+           
+        }
+    }];
+}
+
+-(void)connectToConnectorWithAdr:(NSString*)address port:(NSInteger)port
+{
+    [self.pomelo connectToHost:address onPort:port];
+}
+
 -(void)connect
 {
     [self.pomelo connectToHost:[HttpManager chatServer] onPort:[HttpManager chatPort] withCallback:^(id callback) {
         NSLog(@"call back %@",callback);
     }];
 }
+
 
 -(void)connectOnPort:(NSString*)port
 {
@@ -228,12 +280,24 @@
 
 -(void)PomeloDidConnect:(Pomelo *)pomelo
 {
-    NSLog(@"connect");
+    NSLog(@"connected");
+    if (self.connectStatus == E_GATE_TRY) {
+        self.connectStatus = E_GATE_SUC;
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotify_GateConnectSuc object:nil];
+    }else if(self.connectStatus == E_CONNECTOR_TRY){
+        self.connectStatus = E_CONNECTOR_SUC;
+        [[NSNotificationCenter defaultCenter] postNotificationName:kNotify_ConnectorConnectSuc object:nil];
+    }
 }
 
 -(void)PomeloDidDisconnect:(Pomelo *)pomelo withError:(NSError *)error
 {
     NSLog(@"disconnect %@",error.debugDescription);
+    if (self.connectStatus == E_GATE_CUT) {
+        self.connectStatus = E_CONNECTOR_TRY;
+        [self connectToConnectorWithAdr:self.connectorIP port:self.connectorPort];
+    }
+
 }
 
 

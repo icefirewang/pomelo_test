@@ -21,6 +21,7 @@ typedef void (^Common)(void);
 +(NSString*)httpServer;
 +(NSString*)chatServer;
 +(NSInteger)chatPort;
++(NSInteger)gatePort;
 
 
 +(AFHTTPRequestOperation*)postWithTotalParams:(NSDictionary *)params withSuccess:(HttpSuccess)successBlock fail:(Failed)failBlock;

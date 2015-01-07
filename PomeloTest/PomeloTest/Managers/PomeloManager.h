@@ -35,7 +35,9 @@ typedef void (^ReqFinished)(NSInteger status, NSDictionary* content);
 -(void)changeAvatar:(NSString*)avatarKey;
 #pragma mark 获取离线消息
 -(void)getOfflineMessage:(ReqFinished)finished;
-
+#pragma mark gate
+-(void)connectToGate;
+-(void)getConnectorInfo:(NSString*)userid;
 
 #pragma mark-
 +(PomeloManager*)sharedPomeloManager;

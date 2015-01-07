@@ -226,6 +226,10 @@
     return 3011;
 }
 
++(NSInteger)gatePort
+{
+    return 3014;
+}
 
 +(NSString*)avatarImageAdr
 {

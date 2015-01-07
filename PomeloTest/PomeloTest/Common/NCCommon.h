@@ -8,7 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
-#define kNotify_ChatOffline     @"Notify_ChatOffline"
+#define kNotify_ChatOffline             @"Notify_ChatOffline"
+#define kNotify_GateConnectSuc          @"Notify_GateConnected"
+#define kNotify_ConnectorConnectSuc     @"Notify_ConnectorConnected"
 
 #define kMessageType_Chat         (1)
 #define kMessageType_Image        (2)

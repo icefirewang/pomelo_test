@@ -16,6 +16,7 @@
 #import "AFNetworking.h"
 #import "NSString+json.h"
 #import "NCUserInfo.h"
+#import "NCCommon.h"
 #import "GlobalDataManager.h"
 #import "JCommon.h"
 #import "PomeloManager.h"

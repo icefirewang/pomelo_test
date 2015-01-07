@@ -28,7 +28,7 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
     // Insert code here to initialize your application
-    
+    [self initNotifyReceive];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
@@ -36,6 +36,11 @@
 
 }
 
+-(void)initNotifyReceive
+{
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onGateConnected) name:kNotify_GateConnectSuc object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onConnectorConnected) name:kNotify_ConnectorConnectSuc object:nil];
+}
 
 -(IBAction)onConnect:(id)sender
 {
@@ -50,6 +55,7 @@
     }];
 }
 
+#pragma mark - 获取 connector 信息
 -(IBAction)onConnectOnPort:(id)sender
 {
     NSString *port = [self.tf_port stringValue];
@@ -71,5 +77,26 @@
     [[PomeloManager sharedPomeloManager] disConnect];
 }
 
+-(IBAction)onGetPort:(id)sender
+{
+    [[PomeloManager sharedPomeloManager] connectToGate];
+}
+
+-(void)onGateConnected
+{
+    NSString *userid = [self.tf_userId stringValue];
+    [[PomeloManager sharedPomeloManager] getConnectorInfo:userid];
+}
+-(void)onConnectorConnected
+{
+    NSString *userId = [self.tf_userId stringValue];
+    [[PomeloManager sharedPomeloManager] loginWithUser:userId password:@"111111" reqFinish:^(NSInteger status, NSDictionary *content) {
+        
+    }];
+}
+-(IBAction)onTest:(id)sender
+{
+    
+}
 
 @end
