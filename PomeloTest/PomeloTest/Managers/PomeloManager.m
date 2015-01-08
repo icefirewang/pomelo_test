@@ -18,6 +18,9 @@
 #define kRouteRelation              @"connector.relation.setRelaiont"
 #define kRouteBlacklist             @"connector.relation.setBlack"
 
+// test
+#define kRouteIsUserExist           @"connector.login.isUserExist"
+
 #define kRoute
 
 /* test route */
@@ -60,7 +63,7 @@ typedef enum connectStatus{
 #pragma mark - test
 -(void)test
 {
-
+    [self isUserExist:@"2"];
 }
 
 #pragma mark -  object
@@ -75,7 +78,15 @@ typedef enum connectStatus{
 }
 
 #pragma mark - action
-
+-(void)isUserExist:(NSString*)uid
+{
+    NSDictionary *par = @{
+                          @"uid":uid
+                          };
+    [self.pomelo requestWithRoute:kRouteIsUserExist andParams:par andCallback:^(id callback) {
+        
+    }];
+}
 -(void)connectToGate
 {
     self.connectStatus = E_GATE_TRY;

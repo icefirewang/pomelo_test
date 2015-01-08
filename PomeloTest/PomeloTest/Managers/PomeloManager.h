@@ -42,4 +42,12 @@ typedef void (^ReqFinished)(NSInteger status, NSDictionary* content);
 #pragma mark-
 +(PomeloManager*)sharedPomeloManager;
 
+
+
+
+
+
+
+-(void)test;
+
 @end

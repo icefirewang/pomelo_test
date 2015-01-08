@@ -96,7 +96,7 @@
 }
 -(IBAction)onTest:(id)sender
 {
-    
+    [[PomeloManager sharedPomeloManager] test];
 }
 
 @end
